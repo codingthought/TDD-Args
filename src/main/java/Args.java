@@ -10,6 +10,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 public class Args {
@@ -18,6 +19,11 @@ public class Args {
             "-l", s -> TRUE,
             "-p", Integer::valueOf,
             "-d", s -> s
+    );
+    private static final Map<Class<?>, ?> DEFAULT_VALUE = Map.of(
+            boolean.class, FALSE,
+            int.class, 0,
+            String.class, ""
     );
 
     public Args(String args) {
@@ -41,6 +47,9 @@ public class Args {
                         String optionName = annotation.value();
                         String key = "-" + optionName;
                         String value = argMap.get(key);
+                        if (value == null) {
+                            return DEFAULT_VALUE.get(p.getType());
+                        }
                         checkArgStringValue(p.getType(), value);
                         return PARSERS.get(key).apply(value);
                     }).toList();

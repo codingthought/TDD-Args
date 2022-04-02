@@ -40,10 +40,11 @@ import static org.mockito.Mockito.when;
 // sad path
 // done -l 1
 // done -p /usr/logs
-// done -d /usr/logs /usr/vars
+// done -d /usr/logs /usr/vars // too many
+// done -d // too less
 // default path
-// todo given -p when parse then 0
-// todo given -d when parse then ""
+// done missing -p when parse then 0
+// done missing -d when parse then ""
 
 
 public class ArgsTest {
@@ -81,6 +82,16 @@ public class ArgsTest {
     }
 
     @Test
+    @DisplayName("当输入 miss -l -p -d 时，解析为 Options 时，应该得到正确的默认值")
+    void should_get_default_value_when_parse_into_options_if_param_miss() {
+        Options options = new Args("").parseInto(Options.class);
+
+        assertFalse(options.booleanOption());
+        assertEquals(0, options.intOption());
+        assertEquals("", options.stringOption());
+    }
+
+    @Test
     void should_get_correct_map_when_args_toMap() {
         Map<String, String> argMap = new Args("-l -p 8080 -d /usr/logs").toStringMap();
         assertEquals("", argMap.get("-l"));
@@ -90,9 +101,9 @@ public class ArgsTest {
 
     private static int PARAMETERIZED_TEST_RUN_TIMES = 0;
     @ParameterizedTest
-    @ValueSource(strings = {"-l 1", "-p /usr/logs", "-d /usr/logs /usr/vars", "-l -p 8080 -d /usr/logs /usr/vars"})
+    @ValueSource(strings = {"-l 1", "-p", "-p /usr/logs", "-d /usr/logs /usr/vars", "-l -p 8080 -d /usr/logs /usr/vars"})
     void should_throw_IllegalInputException(String args) {
-        List<Class<?>> classes = List.of(boolean.class, int.class, String.class, Options.class);
+        List<Class<?>> classes = List.of(boolean.class, int.class, int.class, String.class, Options.class);
         assertThrows(IllegalInputException.class, () -> new Args(args).parseInto(classes.get(PARAMETERIZED_TEST_RUN_TIMES++)));
     }
 
