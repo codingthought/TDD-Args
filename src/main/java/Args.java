@@ -1,9 +1,14 @@
+import exception.IllegalInputException;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.lang.Boolean.TRUE;
 
@@ -20,40 +25,62 @@ public class Args {
     }
 
     public <T> T parseInto(Class<T> optionsClass) {
+        Map<String, String> argMap = toStringMap();
+        if (optionsClass.isPrimitive() || String.class.equals(optionsClass)) {
+            return parseSingleType(optionsClass, argMap);
+        }
+        return parseCustomType(optionsClass, argMap);
+    }
+
+    private <T> T parseCustomType(Class<T> optionsClass, Map<String, String> argMap) {
         try {
-            Map<String, String> argMap = toStringMap(args);
-            if (optionsClass.isPrimitive() || String.class.equals(optionsClass)) {
-                return (T) argMap.entrySet().stream().findFirst().map(e -> PARSERS.get(e.getKey()).apply(e.getValue())).orElse(null);
-            }
             Constructor<?>[] constructors = optionsClass.getDeclaredConstructors();
-            List<?> paras = Arrays.stream(constructors[0].getParameters())
+            List<?> params = Arrays.stream(constructors[0].getParameters())
                     .map(p -> {
                         Option annotation = p.getAnnotation(Option.class);
-                        if (annotation == null) {
-                            String uniqueKey = argMap.keySet().iterator().next();
-                            System.out.println(uniqueKey);
-                            return PARSERS.get(uniqueKey).apply(argMap.get(uniqueKey));
-                        }
                         String optionName = annotation.value();
                         String key = "-" + optionName;
-                        return PARSERS.get(key).apply(argMap.get(key));
+                        String value = argMap.get(key);
+                        checkArgStringValue(p.getType(), value);
+                        return PARSERS.get(key).apply(value);
                     }).toList();
-            System.out.println(paras);
-            return (T) constructors[0].newInstance(paras.toArray());
+            return (T) constructors[0].newInstance(params.toArray());
         } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public Map<String, String> toStringMap(String args) {
-        String[] splits = args.split(" ");
-        if (splits.length < 1) {
-            return Map.of();
+    private <T> T parseSingleType(Class<T> optionsClass, Map<String, String> argMap) {
+        return (T) argMap.entrySet().stream().findFirst().map(e -> {
+            String value = e.getValue();
+            checkArgStringValue(optionsClass, value);
+            return PARSERS.get(e.getKey()).apply(value);
+        }).orElse(null);
+    }
+
+    private <T> void checkArgStringValue(Class<T> optionsClass, String value) {
+        int splitLength = value.split(" ").length;
+        if (optionsClass.equals(boolean.class) && value.length() > 0) {
+            throw new IllegalInputException(String.format("illegal value: %s", value));
         }
-        if (splits.length < 2) {
-            return Map.of(splits[0], "");
+        if (optionsClass.equals(int.class) && !value.matches("\\d+")) {
+            throw new IllegalInputException(String.format("illegal value: %s", value));
         }
-        return Map.of(splits[0], splits[1]);
+        if (splitLength > 1) {
+            throw new IllegalInputException(String.format("illegal value: %s", value));
+        }
+    }
+
+    public Map<String, String> toStringMap() {
+        Matcher matcher = Pattern.compile("-[a-zA-Z]+").matcher(args);
+        String[] splits = (args + " ").split("-[a-zA-Z]+");
+        if (splits.length == 0) return Map.of(args, "");
+        Map<String, String> agrMap = new HashMap<>();
+        int keyNumber = 1;
+        while (matcher.find()) {
+            agrMap.put(matcher.group(), splits[keyNumber++].trim());
+        }
+        return agrMap;
     }
 }

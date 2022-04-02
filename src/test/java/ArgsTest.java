@@ -1,13 +1,14 @@
+import exception.IllegalInputException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -37,9 +38,9 @@ import static org.mockito.Mockito.when;
 // done given -d /usr/logs when parse then "/usr/logs"
 // done multi： given -l -p 8080 -d /usr/logs when parse then true 8080 "/usr/logs"
 // sad path
-// todo -l 1
-// todo -p /usr/logs
-// todo -d /usr/logs /usr/vars
+// done -l 1
+// done -p /usr/logs
+// done -d /usr/logs /usr/vars
 // default path
 // todo given -p when parse then 0
 // todo given -d when parse then ""
@@ -69,7 +70,7 @@ public class ArgsTest {
     void should_get_correct_options_when_parse_into_options() {
         // -l -p 8080 -d /usr/logs
         Args args = spy(new Args("-l -p 8080 -d /usr/logs"));
-        when(args.toStringMap(anyString())).thenReturn(Map.of("-l", "",
+        when(args.toStringMap()).thenReturn(Map.of("-l", "",
                 "-p", "8080",
                 "-d", "/usr/logs"));
         Options options = args.parseInto(Options.class);
@@ -77,6 +78,22 @@ public class ArgsTest {
         assertTrue(options.booleanOption());
         assertEquals(8080, options.intOption());
         assertEquals("/usr/logs", options.stringOption());
+    }
+
+    @Test
+    void should_get_correct_map_when_args_toMap() {
+        Map<String, String> argMap = new Args("-l -p 8080 -d /usr/logs").toStringMap();
+        assertEquals("", argMap.get("-l"));
+        assertEquals("8080", argMap.get("-p"));
+        assertEquals("/usr/logs", argMap.get("-d"));
+    }
+
+    private static int PARAMETERIZED_TEST_RUN_TIMES = 0;
+    @ParameterizedTest
+    @ValueSource(strings = {"-l 1", "-p /usr/logs", "-d /usr/logs /usr/vars", "-l -p 8080 -d /usr/logs /usr/vars"})
+    void should_throw_IllegalInputException(String args) {
+        List<Class<?>> classes = List.of(boolean.class, int.class, String.class, Options.class);
+        assertThrows(IllegalInputException.class, () -> new Args(args).parseInto(classes.get(PARAMETERIZED_TEST_RUN_TIMES++)));
     }
 
     @Disabled
