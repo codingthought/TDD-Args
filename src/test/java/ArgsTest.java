@@ -30,8 +30,8 @@ public class ArgsTest {
     // done given -p 8080 when parse then get 8080
     // done given -d /usr/logs when parse then get /usr/logs
     // done given -l -p 8080 -d /usr/logs when parse then get {true,8080,/usr/logs}
-    // todo given -g this is a list when parse then get {this, is, a, list}
-    // todo given -d 1 2 -3 5 when parse then get {1, 2, -3, 5}
+    // done given -g this is a list when parse then get {this, is, a, list}
+    // done given -d 1 2 -3 5 when parse then get {1, 2, -3, 5}
 //    sad path
     // todo miss -l when parse then get false
     // todo miss -p when parse then get 0
@@ -76,8 +76,7 @@ public class ArgsTest {
     }
 
     @Test
-    @Disabled
-    void test_2() {
+    void should_get_correct_array_options_when_parse_ArrayOptions() {
         ArrayOptions options = new Args("-g this is a list -d 1 2 -3 5").parse(ArrayOptions.class);
         assertArrayEquals(new String[]{"this", "is", "a", "list"}, options.groups());
         assertArrayEquals(new int[]{1, 2, -3, 5}, options.decimals());
