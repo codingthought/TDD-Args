@@ -32,12 +32,10 @@ public class Args {
     }
 
     private Object[] toParams(Parameter[] parameters) {
-        return Arrays.stream(parameters).map(p -> {
-            String params = argMap.get(p.getAnnotation(Option.class).value());
-            Class<?> paramType = p.getType();
-            if (paramType.isArray()) return PARSERS.get(paramType).apply(String.join(" ", params));
-            return PARSERS.get(paramType).apply(params);
-        }).toArray();
+        return Arrays.stream(parameters)
+                .map(p -> PARSERS.get(p.getType()).apply(
+                        argMap.get(p.getAnnotation(Option.class).value())))
+                .toArray();
     }
 
     private Map<String, String> toMap(String[] args) {
