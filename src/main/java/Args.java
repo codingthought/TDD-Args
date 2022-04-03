@@ -7,12 +7,13 @@ import java.util.*;
 import java.util.function.Function;
 
 public class Args {
+    public static final String SPACE = " ";
     private final Map<Class<?>, Function<String, ?>> PARSERS = Map.of(
             boolean.class, s -> true,
             int.class, Integer::valueOf,
             String.class, s -> s,
-            String[].class, s -> s,
-            int[].class, Integer::valueOf
+            int[].class, s -> Arrays.stream(s.split(SPACE)).mapToInt(Integer::parseInt).toArray(),
+            String[].class, s -> s.split(SPACE)
     );
     private final Map<String, String[]> argMap;
 
@@ -33,13 +34,9 @@ public class Args {
     private Object[] toParams(Parameter[] parameters) {
         return Arrays.stream(parameters).map(p -> {
             String[] params = argMap.get(p.getAnnotation(Option.class).value());
-            if (params.length == 1)
-                return PARSERS.get(p.getType()).apply(params[0]);
-
-            if (p.getType().equals(int[].class)) {
-                return Arrays.stream(params).map(param -> PARSERS.get(p.getType()).apply(param)).mapToInt(i -> (int) i).toArray();
-            }
-            return Arrays.stream(params).map(param -> PARSERS.get(p.getType()).apply(param)).toArray(String[]::new);
+            Class<?> paramType = p.getType();
+            if (paramType.isArray()) return PARSERS.get(paramType).apply(String.join(" ", params));
+            return PARSERS.get(paramType).apply(params[0]);
         }).toArray();
     }
 
