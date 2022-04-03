@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.function.Function;
 
 public class Args {
-    public static final String SPACE = " ";
+    private static final String SPACE = " ";
     private final Map<Class<?>, Function<String, ?>> PARSERS = Map.of(
             boolean.class, Objects::nonNull,
             int.class, s -> s == null ? 0 : Integer.parseInt(s),
@@ -18,7 +18,7 @@ public class Args {
     private final Map<String, String> argMap;
 
     public Args(String input) {
-        this.argMap = toMap(input.split(" "));
+        this.argMap = toMap(input.split(SPACE));
     }
 
     public <T> T parse(Class<T> optionsClass) {
@@ -39,12 +39,12 @@ public class Args {
 
     private Map<String, String> toMap(String[] args) {
         Map<String, String> result = new HashMap<>();
-        if (args.length == 1 && args[0].equals("-l")) {
-            return Map.of("-l", "");
+        if (args.length == 1 && args[0].equals("l")) {
+            return Map.of(args[0], "");
         }
         for (int i = 0; i < args.length - 1; i++) {
             if (isMatchesParamFlag(args[i])) {
-                result.put(args[i], matchParamValue(args, i));
+                result.put(args[i].substring(1), matchParamValue(args, i));
             }
         }
         return result;

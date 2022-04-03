@@ -33,18 +33,18 @@ public class ArgsTest {
     // done given -g this is a list when parse then get {this, is, a, list}
     // done given -d 1 2 -3 5 when parse then get {1, 2, -3, 5}
 //    sad path
-    // todo miss -l when parse then get false
-    // todo miss -p when parse then get 0
-    // todo miss -d when parse then get ""
+    // done miss -l when parse then get false
+    // done miss -p when parse then get 0
+    // done miss -d when parse then get ""
     // todo given -p /usr/logs when parse then throw IllegalArgValueException
     // todo given -p when parse then throw MissingArgValueException
     // todo given -d /usr/logs /uer/vars when parse then throw TooManyArgValueException
     @Test
     void should_get_true_when_parse_BoolOption() {
-        assertTrue(new Args("-l").parse(BooleanOption.class).logging());
+        assertTrue(new Args("l").parse(BooleanOption.class).logging());
     }
 
-    record BooleanOption(@Option("-l") boolean logging) {
+    record BooleanOption(@Option("l") boolean logging) {
     }
 
     @Test
@@ -52,7 +52,7 @@ public class ArgsTest {
         assertEquals(8080, new Args("-p 8080").parse(IntOption.class).port());
     }
 
-    record IntOption(@Option("-p") int port) {
+    record IntOption(@Option("p") int port) {
     }
 
     @Test
@@ -60,7 +60,7 @@ public class ArgsTest {
         assertEquals("/usr/logs", new Args("-d /usr/logs").parse(StringOption.class).dir());
     }
 
-    record StringOption(@Option("-d") String dir) {
+    record StringOption(@Option("d") String dir) {
     }
 
     @Test
@@ -79,7 +79,7 @@ public class ArgsTest {
         assertEquals("", options.directory());
     }
 
-    record Options(@Option("-l") boolean logging, @Option("-p") int port, @Option("-d") String directory) {
+    record Options(@Option("l") boolean logging, @Option("p") int port, @Option("d") String directory) {
 
     }
 
@@ -90,6 +90,6 @@ public class ArgsTest {
         assertArrayEquals(new int[]{1, 2, -3, 5}, options.decimals());
     }
 
-    record ArrayOptions(@Option("-g") String[] groups, @Option("-d") int[] decimals) {
+    record ArrayOptions(@Option("g") String[] groups, @Option("d") int[] decimals) {
     }
 }
