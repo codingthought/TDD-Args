@@ -71,6 +71,14 @@ public class ArgsTest {
         assertEquals("/usr/logs", options.directory());
     }
 
+    @Test
+    void should_get_options_with_default_value_when_parse_Options_if_param_miss() {
+        Options options = new Args("").parse(Options.class);
+        assertFalse(options.logging());
+        assertEquals(0, options.port());
+        assertEquals("", options.directory());
+    }
+
     record Options(@Option("-l") boolean logging, @Option("-p") int port, @Option("-d") String directory) {
 
     }
