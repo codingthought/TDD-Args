@@ -7,13 +7,8 @@ public class Args {
     public <T> T parse(Class<T> optionsClass) {
         try {
             return (T) optionsClass.getDeclaredConstructors()[0].newInstance(true);
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException("parse exception", e);
         }
-        return null;
     }
 }
