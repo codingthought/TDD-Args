@@ -9,12 +9,39 @@ import java.util.function.Function;
 public class Args {
     private static final String SPACE = " ";
     private final Map<Class<?>, Function<String, ?>> PARSERS = Map.of(
-            boolean.class, Objects::nonNull,
-            int.class, s -> s == null ? 0 : Integer.parseInt(s),
-            String.class, s -> Optional.ofNullable(s).orElse(""),
+            boolean.class, new BooleanParser()::parse,
+            int.class, new IntParser()::parse,
+            String.class, new StringParser()::parse,
             int[].class, s -> Arrays.stream(s.split(SPACE)).mapToInt(Integer::parseInt).toArray(),
             String[].class, s -> s.split(SPACE)
     );
+
+    interface parser<T> {
+        T parse(String given);
+    }
+
+    static class BooleanParser implements parser<Boolean> {
+        @Override
+        public Boolean parse(String given) {
+            return Objects.nonNull(given);
+        }
+    }
+
+
+    static class IntParser implements parser<Integer> {
+        @Override
+        public Integer parse(String given) {
+            return given == null ? 0 : Integer.parseInt(given);
+        }
+    }
+
+    static class StringParser implements parser<String> {
+        @Override
+        public String parse(String given) {
+            return Optional.ofNullable(given).orElse("");
+        }
+    }
+
     private final Map<String, String> argMap;
 
     public Args(String input) {
