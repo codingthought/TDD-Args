@@ -12,21 +12,24 @@ public class Args {
         try {
             String[] args = input.split(" ");
             Constructor<?> constructor = optionsClass.getDeclaredConstructors()[0];
-            Object result = null;
-            if (args.length > 1) {
-                String arg = args[0];
-                if (arg.equals("-p")) {
-                    result = Integer.valueOf(args[1]);
-                }
-                if (arg.equals("-d")) {
-                    result = args[1];
-                }
-            } else {
-                result = true;
-            }
-            return (T) constructor.newInstance(result);
+            return (T) constructor.newInstance(toParam(args));
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException("parse exception", e);
         }
+    }
+
+    private Object toParam(String[] args) {
+        Object result = null;
+        String arg = args[0];
+        if (arg.equals("-p")) {
+            result = Integer.valueOf(args[1]);
+        }
+        if (arg.equals("-d")) {
+            result = args[1];
+        }
+        if (arg.equals("-l")) {
+            result = true;
+        }
+        return result;
     }
 }
