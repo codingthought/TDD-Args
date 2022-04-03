@@ -15,28 +15,28 @@ public class Args {
             "-p", Integer::valueOf,
             "-d", s -> s
     );
+    private Map<String, String> argMap;
 
     public Args(String input) {
         this.input = input;
+        String[] args = input.split(" ");
+        this.argMap = toMap(args);
     }
 
     public <T> T parse(Class<T> optionsClass) {
         try {
-            String[] args = input.split(" ");
             Constructor<?> constructor = optionsClass.getDeclaredConstructors()[0];
-            Parameter[] parameters = constructor.getParameters();
-            Map<String, String> argMap = toMap(args);
-            if (parameters.length > 1) {
-                Object[] params = Arrays.stream(parameters).map(p -> {
-                    String key = p.getAnnotation(Option.class).value();
-                    return PARSERS.get(key).apply(argMap.get(key));
-                }).toArray();
-                return (T) constructor.newInstance(params);
-            }
-            return (T) constructor.newInstance(toParam(args));
+            return (T) constructor.newInstance(toParams(constructor.getParameters()));
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException("parse exception", e);
         }
+    }
+
+    private Object[] toParams(Parameter[] parameters) {
+        return Arrays.stream(parameters).map(p -> {
+            String key = p.getAnnotation(Option.class).value();
+            return PARSERS.get(key).apply(argMap.get(key));
+        }).toArray();
     }
 
     private Map<String, String> toMap(String[] args) {
@@ -54,10 +54,5 @@ public class Args {
             }
         }
         return result;
-    }
-
-    private Object toParam(String[] args) {
-        String argValue = args.length > 1 ? args[1] : "";
-        return PARSERS.get(args[0]).apply(argValue);
     }
 }
