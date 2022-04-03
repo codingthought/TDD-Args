@@ -39,9 +39,6 @@ public class Args {
 
     private Map<String, String> toMap(String[] args) {
         Map<String, String> result = new HashMap<>();
-        if (args.length == 1) {
-            return Map.of(args[0], "");
-        }
         for (int i = 0; i < args.length - 1; i++) {
             if (isMatchesParamFlag(args[i])) {
                 result.put(args[i], matchParamValue(args, i));
