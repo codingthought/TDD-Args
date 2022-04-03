@@ -18,8 +18,7 @@ public class Args {
     private final Map<String, String> argMap;
 
     public Args(String input) {
-        String[] args = input.split(" ");
-        this.argMap = toMap(args);
+        this.argMap = toMap(input.split(" "));
     }
 
     public <T> T parse(Class<T> optionsClass) {
@@ -44,23 +43,30 @@ public class Args {
             return Map.of(args[0], "");
         }
         for (int i = 0; i < args.length - 1; i++) {
-            String current = args[i];
-            String regex = "^-[a-zA-Z]+$";
-            if (current.matches(regex)) {
-                if (args[i + 1].matches(regex)) {
-                    result.put(current, "");
+            String paramFlag = args[i];
+            if (isMatchesParamFlag(paramFlag)) {
+                if (isMatchesParamFlag(args[i + 1])) {
+                    result.put(paramFlag, "");
                     continue;
                 }
-                List<String> values = new ArrayList<>();
-                for (int j = i + 1; j < args.length; j++) {
-                    values.add(args[j]);
-                    if (j == args.length - 1 || args[j + 1].matches(regex)) {
-                        result.put(current, String.join(" ", values));
-                        break;
-                    }
-                }
+                result.put(paramFlag, matchParamValue(args, i));
             }
         }
         return result;
+    }
+
+    private String matchParamValue(String[] args, int i) {
+        List<String> values = new ArrayList<>();
+        for (int j = i + 1; j < args.length; j++) {
+            values.add(args[j]);
+            if (j + 1 == args.length || isMatchesParamFlag(args[j + 1])) {
+                break;
+            }
+        }
+        return String.join(" ", values);
+    }
+
+    private boolean isMatchesParamFlag(String arg) {
+        return arg.matches("^-[a-zA-Z]+$");
     }
 }
