@@ -13,7 +13,13 @@ public class Args {
             String[] args = input.split(" ");
             Constructor<?> constructor = optionsClass.getDeclaredConstructors()[0];
             if (args.length > 1) {
-                return (T) constructor.newInstance(Integer.valueOf(args[1]));
+                String arg = args[0];
+                if (arg.equals("-p")) {
+                    return (T) constructor.newInstance(Integer.valueOf(args[1]));
+                }
+                if (arg.equals("-d")) {
+                    return (T) constructor.newInstance(args[1]);
+                }
             }
             return (T) constructor.newInstance(true);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
