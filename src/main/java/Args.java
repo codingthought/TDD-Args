@@ -43,21 +43,16 @@ public class Args {
             return Map.of(args[0], "");
         }
         for (int i = 0; i < args.length - 1; i++) {
-            String paramFlag = args[i];
-            if (isMatchesParamFlag(paramFlag)) {
-                if (isMatchesParamFlag(args[i + 1])) {
-                    result.put(paramFlag, "");
-                    continue;
-                }
-                result.put(paramFlag, matchParamValue(args, i));
+            if (isMatchesParamFlag(args[i])) {
+                result.put(args[i], matchParamValue(args, i));
             }
         }
         return result;
     }
 
-    private String matchParamValue(String[] args, int i) {
+    private String matchParamValue(String[] args, int paramIndex) {
         List<String> values = new ArrayList<>();
-        for (int j = i + 1; j < args.length; j++) {
+        for (int j = paramIndex + 1; j < args.length; j++) {
             values.add(args[j]);
             if (j + 1 == args.length || isMatchesParamFlag(args[j + 1])) {
                 break;
