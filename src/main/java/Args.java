@@ -9,16 +9,14 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class Args {
-    private final String input;
     private final Map<String, Function<String, ?>> PARSERS = Map.of(
             "-l", s -> true,
             "-p", Integer::valueOf,
             "-d", s -> s
     );
-    private Map<String, String> argMap;
+    private final Map<String, String> argMap;
 
     public Args(String input) {
-        this.input = input;
         String[] args = input.split(" ");
         this.argMap = toMap(args);
     }
