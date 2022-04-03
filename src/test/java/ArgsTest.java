@@ -1,3 +1,4 @@
+import annotation.Option;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,6 +24,21 @@ public class ArgsTest {
      * 如果给出的参数与模式不匹配，重要的是给出一个好的错误信息，准确地解释什么是错误的。
      * 确保你的代码是可扩展的，即如何增加新的数值类型是直接和明显的。
      */
+//    happy path
+    // todo given -l when parse then get ture
+    // todo given -p 8080 when parse then get 8080
+    // todo given -d /usr/logs when parse then get /usr/logs
+    // todo given -l -p 8080 -d /usr/logs when parse then get {true,8080,/usr/logs}
+    // todo given -g this is a list when parse then get {this, is, a, list}
+    // todo given -d 1 2 -3 5 when parse then get {1, 2, -3, 5}
+//    sad path
+    // todo miss -l when parse then get false
+    // todo miss -p when parse then get 0
+    // todo miss -d when parse then get ""
+    // todo given -p /usr/logs when parse then throw IllegalArgValueException
+    // todo given -p when parse then throw MissingArgValueException
+    // todo given -d /usr/logs /uer/vars when parse then throw TooManyArgValueException
+
     @Test
     void test_1() {
         Options options = new Args("-l -p 8080 -d /usr/logs").parse(Options.class);
