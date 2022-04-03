@@ -26,7 +26,7 @@ public class ArgsTest {
      * 确保你的代码是可扩展的，即如何增加新的数值类型是直接和明显的。
      */
 //    happy path
-    // todo given -l when parse then get ture
+    // done given -l when parse then get ture
     // todo given -p 8080 when parse then get 8080
     // todo given -d /usr/logs when parse then get /usr/logs
     // todo given -l -p 8080 -d /usr/logs when parse then get {true,8080,/usr/logs}
@@ -40,11 +40,19 @@ public class ArgsTest {
     // todo given -p when parse then throw MissingArgValueException
     // todo given -d /usr/logs /uer/vars when parse then throw TooManyArgValueException
     @Test
-    void should_get_true_when_parse_boolOption() {
+    void should_get_true_when_parse_BoolOption() {
         assertTrue(new Args("-l").parse(BooleanOption.class).logging());
     }
 
     record BooleanOption(@Option("-l") boolean logging) {
+    }
+
+    @Test
+    void should_get_8080_when_parse_IntOption() {
+        assertEquals(8080, new Args("-p 8080").parse(IntOption.class).port());
+    }
+
+    record IntOption(@Option("-p") int port) {
     }
 
     @Test
