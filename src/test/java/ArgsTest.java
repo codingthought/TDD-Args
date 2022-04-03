@@ -1,5 +1,7 @@
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class ArgsTest {
     /**
      * 题目：
@@ -22,7 +24,23 @@ public class ArgsTest {
      * 确保你的代码是可扩展的，即如何增加新的数值类型是直接和明显的。
      */
     @Test
-    void change_me() {
+    void test_1() {
+        Options options = new Args("-l -p 8080 -d /usr/logs").parse(Options.class);
+        assertTrue(options.logging());
+        assertEquals(8080, options.port());
+        assertEquals("usr/logs", options.directory());
+    }
 
+    record Options(@Option("-l") boolean logging, @Option("-p") int port, @Option("-d") String directory) {
+    }
+
+    @Test
+    void test_2() {
+        ArrayOptions options = new Args("-g this is a list -d 1 2 -3 5").parse(ArrayOptions.class);
+        assertArrayEquals(new String[]{"this", "is", "a", "list"}, options.groups());
+        assertArrayEquals(new int[]{1, 2, -3, 5}, options.decimals());
+    }
+
+    record ArrayOptions(@Option("-g") String[] groups, @Option("-d") int[] decimals) {
     }
 }
