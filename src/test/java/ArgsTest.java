@@ -56,6 +56,14 @@ public class ArgsTest {
     }
 
     @Test
+    void should_get_usr_logs_when_parse_StringOption() {
+        assertEquals("/usr/logs", new Args("-d /usr/logs").parse(StringOption.class).dir());
+    }
+
+    record StringOption(@Option("-d") String dir) {
+    }
+
+    @Test
     @Disabled
     void test_1() {
         Options options = new Args("-l -p 8080 -d /usr/logs").parse(Options.class);
