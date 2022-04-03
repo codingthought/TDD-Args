@@ -15,7 +15,7 @@ public class Args {
             int[].class, s -> Arrays.stream(s.split(SPACE)).mapToInt(Integer::parseInt).toArray(),
             String[].class, s -> s.split(SPACE)
     );
-    private final Map<String, String[]> argMap;
+    private final Map<String, String> argMap;
 
     public Args(String input) {
         String[] args = input.split(" ");
@@ -33,36 +33,35 @@ public class Args {
 
     private Object[] toParams(Parameter[] parameters) {
         return Arrays.stream(parameters).map(p -> {
-            String[] params = argMap.get(p.getAnnotation(Option.class).value());
+            String params = argMap.get(p.getAnnotation(Option.class).value());
             Class<?> paramType = p.getType();
             if (paramType.isArray()) return PARSERS.get(paramType).apply(String.join(" ", params));
-            return PARSERS.get(paramType).apply(params[0]);
+            return PARSERS.get(paramType).apply(params);
         }).toArray();
     }
 
-    private Map<String, String[]> toMap(String[] args) {
-        Map<String, String[]> result = new HashMap<>();
+    private Map<String, String> toMap(String[] args) {
+        Map<String, String> result = new HashMap<>();
         if (args.length == 1) {
-            return Map.of(args[0], new String[]{""});
+            return Map.of(args[0], "");
         }
-        List<String> values = new ArrayList<>();
         for (int i = 0; i < args.length - 1; i++) {
             String current = args[i];
             String regex = "^-[a-zA-Z]+$";
             if (current.matches(regex)) {
                 if (args[i + 1].matches(regex)) {
-                    result.put(current, new String[]{""});
+                    result.put(current, "");
                     continue;
                 }
+                List<String> values = new ArrayList<>();
                 for (int j = i + 1; j < args.length; j++) {
                     values.add(args[j]);
                     if (j == args.length - 1 || args[j + 1].matches(regex)) {
-                        result.put(current, values.toArray(String[]::new));
+                        result.put(current, String.join(" ", values));
                         break;
                     }
                 }
             }
-            values.clear();
         }
         return result;
     }
