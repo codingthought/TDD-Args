@@ -12,16 +12,19 @@ public class Args {
         try {
             String[] args = input.split(" ");
             Constructor<?> constructor = optionsClass.getDeclaredConstructors()[0];
+            Object result = null;
             if (args.length > 1) {
                 String arg = args[0];
                 if (arg.equals("-p")) {
-                    return (T) constructor.newInstance(Integer.valueOf(args[1]));
+                    result = Integer.valueOf(args[1]);
                 }
                 if (arg.equals("-d")) {
-                    return (T) constructor.newInstance(args[1]);
+                    result = args[1];
                 }
+            } else {
+                result = true;
             }
-            return (T) constructor.newInstance(true);
+            return (T) constructor.newInstance(result);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException("parse exception", e);
         }
