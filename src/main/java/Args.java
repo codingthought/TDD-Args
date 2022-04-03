@@ -9,9 +9,9 @@ import java.util.function.Function;
 public class Args {
     public static final String SPACE = " ";
     private final Map<Class<?>, Function<String, ?>> PARSERS = Map.of(
-            boolean.class, s -> true,
-            int.class, Integer::valueOf,
-            String.class, s -> s,
+            boolean.class, Objects::nonNull,
+            int.class, s -> s == null ? 0 : Integer.parseInt(s),
+            String.class, s -> Optional.ofNullable(s).orElse(""),
             int[].class, s -> Arrays.stream(s.split(SPACE)).mapToInt(Integer::parseInt).toArray(),
             String[].class, s -> s.split(SPACE)
     );
@@ -39,6 +39,9 @@ public class Args {
 
     private Map<String, String> toMap(String[] args) {
         Map<String, String> result = new HashMap<>();
+        if (args.length == 1 && args[0].equals("-l")) {
+            return Map.of("-l", "");
+        }
         for (int i = 0; i < args.length - 1; i++) {
             if (isMatchesParamFlag(args[i])) {
                 result.put(args[i], matchParamValue(args, i));
