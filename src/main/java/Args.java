@@ -1,8 +1,15 @@
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.function.Function;
 
 public class Args {
     private final String input;
+    private final Map<String, Function<String, ?>> PARSERS = Map.of(
+            "-l", s -> true,
+            "-p", Integer::valueOf,
+            "-d", s -> s
+    );
 
     public Args(String input) {
         this.input = input;
@@ -19,17 +26,7 @@ public class Args {
     }
 
     private Object toParam(String[] args) {
-        Object result = null;
-        String arg = args[0];
-        if (arg.equals("-p")) {
-            result = Integer.valueOf(args[1]);
-        }
-        if (arg.equals("-d")) {
-            result = args[1];
-        }
-        if (arg.equals("-l")) {
-            result = true;
-        }
-        return result;
+        String argValue = args.length > 1 ? args[1] : "";
+        return PARSERS.get(args[0]).apply(argValue);
     }
 }
