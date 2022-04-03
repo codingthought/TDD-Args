@@ -29,7 +29,7 @@ public class ArgsTest {
     // done given -l when parse then get ture
     // done given -p 8080 when parse then get 8080
     // done given -d /usr/logs when parse then get /usr/logs
-    // todo given -l -p 8080 -d /usr/logs when parse then get {true,8080,/usr/logs}
+    // done given -l -p 8080 -d /usr/logs when parse then get {true,8080,/usr/logs}
     // todo given -g this is a list when parse then get {this, is, a, list}
     // todo given -d 1 2 -3 5 when parse then get {1, 2, -3, 5}
 //    sad path
@@ -64,12 +64,11 @@ public class ArgsTest {
     }
 
     @Test
-    @Disabled
-    void test_1() {
+    void should_get_correct_options_when_parse_Options() {
         Options options = new Args("-l -p 8080 -d /usr/logs").parse(Options.class);
         assertTrue(options.logging());
         assertEquals(8080, options.port());
-        assertEquals("usr/logs", options.directory());
+        assertEquals("/usr/logs", options.directory());
     }
 
     record Options(@Option("-l") boolean logging, @Option("-p") int port, @Option("-d") String directory) {
