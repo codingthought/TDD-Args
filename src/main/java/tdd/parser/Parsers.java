@@ -10,9 +10,9 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
-public class Parsers {
+import static tdd.StringConstant.SPACE;
 
-    public static final String SPACE = " ";
+public class Parsers {
 
     public static Parser<Boolean> bool() {
         return given -> Optional.ofNullable(given).map(s -> matchValue(s, 0, t -> false).isBlank()).orElse(false);

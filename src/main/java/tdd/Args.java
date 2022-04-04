@@ -3,16 +3,16 @@ package tdd;
 import tdd.annotation.Option;
 import tdd.parser.Parser;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 import java.util.*;
 
+import static tdd.StringConstant.SPACE;
 import static tdd.parser.Parsers.*;
 
 public class Args {
-    private static final String SPACE = " ";
+    private final Map<String, String> argsValue;
     private final Map<Class<?>, Parser<?>> PARSERS = Map.of(
             boolean.class, bool(),
             int.class, unary(Integer::parseInt, 0, given1 -> !given1.matches("-?\\d+")),
@@ -24,10 +24,9 @@ public class Args {
             String[].class, array(String::valueOf, String[]::new)
     );
 
-    private final Map<String, String> argMap;
 
     public Args(String input) {
-        this.argMap = toMap(input.split(SPACE));
+        this.argsValue = toMap(input.split(SPACE));
     }
 
     public <T> T parse(Class<T> optionsClass) {
@@ -41,7 +40,7 @@ public class Args {
 
     private Object[] toParams(Parameter[] parameters) {
         return Arrays.stream(parameters)
-                .map(p -> PARSERS.get(p.getType()).parse(p.getAnnotation(Option.class), argMap, p.getType()))
+                .map(p -> PARSERS.get(p.getType()).parse(p.getAnnotation(Option.class), argsValue, p.getType()))
                 .toArray();
     }
 
@@ -64,7 +63,7 @@ public class Args {
             if (isMatchesParamFlag(args[j])) break;
             values.add(args[j]);
         }
-        return String.join(" ", values);
+        return String.join(SPACE, values);
     }
 
     private boolean isMatchesParamFlag(String arg) {
