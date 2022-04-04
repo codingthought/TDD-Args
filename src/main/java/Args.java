@@ -12,8 +12,8 @@ public class Args {
     private static final String SPACE = " ";
     private final Map<Class<?>, Function<String, ?>> PARSERS = Map.of(
             boolean.class, new BooleanParser()::parse,
-            int.class, new SingleValueParser(Integer::parseInt, 0, given1 -> !given1.matches("\\d+"))::parse,
-            String.class, new SingleValueParser(String::valueOf, "", given -> false)::parse,
+            int.class, new SingleValueParser<>(Integer::parseInt, 0, given1 -> !given1.matches("\\d+"))::parse,
+            String.class, new SingleValueParser<>(String::valueOf, "", given -> false)::parse,
             int[].class, s -> Arrays.stream(s.split(SPACE)).mapToInt(Integer::parseInt).toArray(),
             String[].class, s -> s.split(SPACE)
     );

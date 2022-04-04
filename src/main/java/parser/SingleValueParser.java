@@ -7,20 +7,20 @@ import exception.TooManyArgValueException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class SingleValueParser implements Parser<Object> {
+public class SingleValueParser<T> implements Parser<T> {
 
-    public SingleValueParser(Function<String, Object> givenParser, Object defaultValue, Predicate<String> isIllegalValue) {
+    public SingleValueParser(Function<String, T> givenParser, T defaultValue, Predicate<String> isIllegalValue) {
         this.isIllegalValue = isIllegalValue;
         this.defaultValue = defaultValue;
         this.givenParser = givenParser;
     }
 
-    private final Function<String, Object> givenParser;
-    private final Object defaultValue;
+    private final Function<String, T> givenParser;
+    private final T defaultValue;
     private final Predicate<String> isIllegalValue;
 
     @Override
-    public Object parse(String given) {
+    public T parse(String given) {
         if (given == null) {
             return defaultValue;
         }
