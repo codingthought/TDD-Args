@@ -4,14 +4,13 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 
 @Target({ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DefaultValue {
-    Class<?> clazz() default Void.class;
-
     boolean booleanValue() default false;
 
     int intValue() default 0;
@@ -27,5 +26,6 @@ public @interface DefaultValue {
             int.class, DefaultValue::intValue,
             String.class, DefaultValue::stringValue,
             int[].class, DefaultValue::intArrayValue,
+            Integer[].class, d -> Arrays.stream(d.intArrayValue()).boxed().toArray(Integer[]::new),
             String[].class, DefaultValue::stringArrayValue);
 }

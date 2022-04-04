@@ -11,9 +11,10 @@ public interface Parser<T> {
 
     T parse(String given);
 
-    default T parse(Option option, Map<String, String> argsGiven) {
-        return ofNullable(argsGiven.get(option.value())).map(this::parse)
-                .orElseGet(() -> (T) ofNullable(DEFAULT_FUNCTION_MAP.get(option.defaultValue().clazz()).apply(option.defaultValue()))
+    default T parse(Option option, Map<String, String> argsGiven, Class<?> clazz) {
+        String value = argsGiven.get(option.value());
+        return ofNullable(value).map(this::parse).orElseGet(() ->
+                ofNullable((T) DEFAULT_FUNCTION_MAP.get(clazz).apply(option.defaultValue()))
                         .orElseGet(() -> parse(null)));
     }
 }

@@ -41,7 +41,7 @@ public class Args {
 
     private Object[] toParams(Parameter[] parameters) {
         return Arrays.stream(parameters)
-                .map(p -> PARSERS.get(p.getType()).parse(p.getAnnotation(Option.class), argMap))
+                .map(p -> PARSERS.get(p.getType()).parse(p.getAnnotation(Option.class), argMap, p.getType()))
                 .toArray();
     }
 
