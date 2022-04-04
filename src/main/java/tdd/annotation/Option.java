@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 public @interface Option {
     String value();
 
-    DefaultValue defaultValue() default @DefaultValue(value = "", clazz = Void.class);
+    DefaultValue defaultValue() default @DefaultValue;
 }

@@ -10,12 +10,12 @@ public interface Parser<T> {
     T parse(String given);
 
     default T parse(Option option, Map<String, String> argsGiven) {
-        return parse(Optional.ofNullable(argsGiven.get(option.value())).orElseGet(() -> {
+        return Optional.ofNullable(argsGiven.get(option.value())).map(this::parse).orElseGet(() -> {
             DefaultValue defaultValue = option.defaultValue();
             if (defaultValue.clazz().equals(Void.class)) {
-                return null;
+                return parse(null);
             }
-            return defaultValue.value();
-        }));
+            return (T) Integer.valueOf(defaultValue.intValue());
+        });
     }
 }

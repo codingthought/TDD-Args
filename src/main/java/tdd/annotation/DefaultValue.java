@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DefaultValue {
-    String value();
+    Class<?> clazz() default Void.class;
 
-    Class<?> clazz();
+    int intValue() default 0;
 }

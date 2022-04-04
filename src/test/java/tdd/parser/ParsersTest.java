@@ -51,7 +51,7 @@ public class ParsersTest {
         }
 
         public record IntOptionWithDefault(
-                @Option(value = "p", defaultValue = @DefaultValue(value = "-1", clazz = int.class)) int port) {
+                @Option(value = "p", defaultValue = @DefaultValue(intValue = -1, clazz = int.class)) int port) {
         }
 
         @Test
