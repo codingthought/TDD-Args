@@ -48,9 +48,10 @@ public class ArgsTest {
 
     @Test
     void should_get_correct_array_options_when_parse_ArrayOptions() {
-        ArrayOptions options = new Args("-g this is a list -d 1 2 -3 5").parse(ArrayOptions.class);
+        ArrayOptions options = new Args("-g this is a list -d 1 2 -3 5 -n 1 -3 5").parse(ArrayOptions.class);
         assertArrayEquals(new String[]{"this", "is", "a", "list"}, options.groups());
         assertArrayEquals(new Integer[]{1, 2, -3, 5}, options.decimals());
+        assertArrayEquals(new int[]{1, -3, 5}, options.numbers());
     }
 
     @Test
@@ -58,8 +59,9 @@ public class ArgsTest {
         ArrayOptions options = new Args("").parse(ArrayOptions.class);
         assertArrayEquals(new String[]{}, options.groups());
         assertArrayEquals(new Integer[]{}, options.decimals());
+        assertArrayEquals(new int[]{}, options.numbers());
     }
 
-    record ArrayOptions(@Option("g") String[] groups, @Option("d") Integer[] decimals) {
+    record ArrayOptions(@Option("g") String[] groups, @Option("d") Integer[] decimals, @Option("n") int[] numbers) {
     }
 }

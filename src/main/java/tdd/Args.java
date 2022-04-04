@@ -16,6 +16,9 @@ public class Args {
             boolean.class, bool()::parse,
             int.class, unary(Integer::parseInt, 0, given1 -> !given1.matches("\\d+"))::parse,
             String.class, unary(String::valueOf, "", given -> false)::parse,
+            int[].class, s -> Optional.ofNullable(s)
+                    .map(given -> Arrays.stream(given.split(SPACE)).mapToInt(Integer::parseInt).toArray())
+                    .orElse(new int[0]),
             Integer[].class, array(Integer::parseInt, Integer[]::new)::parse,
             String[].class, array(String::valueOf, String[]::new)::parse
     );
