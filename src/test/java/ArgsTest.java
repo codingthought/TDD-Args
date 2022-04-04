@@ -1,6 +1,7 @@
 import annotation.Option;
 import exception.IllegalArgValueException;
 import exception.MissingArgValueException;
+import exception.TooManyArgValueException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +41,7 @@ public class ArgsTest {
     // done miss -d when parse then get ""
     // done given -p /usr/logs when parse then throw IllegalArgValueException
     // done given -p when parse then throw MissingArgValueException
-    // todo given -d /usr/logs /uer/vars when parse then throw TooManyArgValueException
+    // done given -d /usr/logs /uer/vars when parse then throw TooManyArgValueException
     @Test
     void should_get_true_when_parse_BoolOption() {
         assertTrue(new Args("-l").parse(BooleanOption.class).logging());
@@ -105,4 +106,8 @@ public class ArgsTest {
         assertThrows(MissingArgValueException.class, () -> new Args("-p").parse(IntOption.class));
     }
 
+    @Test
+    void should_throw_TooManyArgValueException_when_parse_if_too_many_arg_value() {
+        assertThrows(TooManyArgValueException.class, () -> new Args("-d /usr/logs /uer/vars").parse(StringOption.class));
+    }
 }

@@ -1,10 +1,16 @@
 package parser;
 
-import java.util.Optional;
+import exception.TooManyArgValueException;
 
 public class StringParser implements Parser<String> {
     @Override
     public String parse(String given) {
-        return Optional.ofNullable(given).orElse("");
+        if (given == null) {
+            return "";
+        }
+        if (given.split(" ").length > 1) {
+            throw new TooManyArgValueException(String.format("given: %s", given));
+        }
+        return given;
     }
 }
