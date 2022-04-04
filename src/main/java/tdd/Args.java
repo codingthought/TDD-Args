@@ -8,8 +8,7 @@ import java.lang.reflect.Parameter;
 import java.util.*;
 import java.util.function.Function;
 
-import static tdd.parser.SingleValueParsers.bool;
-import static tdd.parser.SingleValueParsers.unary;
+import static tdd.parser.SingleValueParsers.*;
 
 public class Args {
     private static final String SPACE = " ";
@@ -17,8 +16,8 @@ public class Args {
             boolean.class, bool()::parse,
             int.class, unary(Integer::parseInt, 0, given1 -> !given1.matches("\\d+"))::parse,
             String.class, unary(String::valueOf, "", given -> false)::parse,
-            int[].class, s -> Arrays.stream(s.split(SPACE)).mapToInt(Integer::parseInt).toArray(),
-            String[].class, s -> s.split(SPACE)
+            Integer[].class, array(Integer::parseInt, Integer[]::new)::parse,
+            String[].class, array(String::valueOf, String[]::new)::parse
     );
 
     private final Map<String, String> argMap;

@@ -50,9 +50,16 @@ public class ArgsTest {
     void should_get_correct_array_options_when_parse_ArrayOptions() {
         ArrayOptions options = new Args("-g this is a list -d 1 2 -3 5").parse(ArrayOptions.class);
         assertArrayEquals(new String[]{"this", "is", "a", "list"}, options.groups());
-        assertArrayEquals(new int[]{1, 2, -3, 5}, options.decimals());
+        assertArrayEquals(new Integer[]{1, 2, -3, 5}, options.decimals());
     }
 
-    record ArrayOptions(@Option("g") String[] groups, @Option("d") int[] decimals) {
+    @Test
+    void should_get_array_options_with_default_value_when_parse_ArrayOptions_if_param_miss() {
+        ArrayOptions options = new Args("").parse(ArrayOptions.class);
+        assertArrayEquals(new String[]{}, options.groups());
+        assertArrayEquals(new Integer[]{}, options.decimals());
+    }
+
+    record ArrayOptions(@Option("g") String[] groups, @Option("d") Integer[] decimals) {
     }
 }
