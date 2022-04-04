@@ -1,5 +1,6 @@
 import annotation.Option;
 import exception.IllegalArgValueException;
+import exception.MissingArgValueException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -38,11 +39,11 @@ public class ArgsTest {
     // done miss -p when parse then get 0
     // done miss -d when parse then get ""
     // done given -p /usr/logs when parse then throw IllegalArgValueException
-    // todo given -p when parse then throw MissingArgValueException
+    // done given -p when parse then throw MissingArgValueException
     // todo given -d /usr/logs /uer/vars when parse then throw TooManyArgValueException
     @Test
     void should_get_true_when_parse_BoolOption() {
-        assertTrue(new Args("l").parse(BooleanOption.class).logging());
+        assertTrue(new Args("-l").parse(BooleanOption.class).logging());
     }
 
     record BooleanOption(@Option("l") boolean logging) {
@@ -97,6 +98,11 @@ public class ArgsTest {
     @Test
     void should_throw_IllegalArgumentException_when_parse_Illegal_Input() {
         assertThrows(IllegalArgValueException.class, () -> new Args("-p /usr/logs").parse(IntOption.class));
+    }
+
+    @Test
+    void should_throw_MissingArgValueException_when_parse_if_miss_arg_value() {
+        assertThrows(MissingArgValueException.class, () -> new Args("-p").parse(IntOption.class));
     }
 
 }

@@ -43,8 +43,8 @@ public class Args {
 
     private Map<String, String> toMap(String[] args) {
         Map<String, String> result = new HashMap<>();
-        if (args.length == 1 && args[0].equals("l")) {
-            return Map.of(args[0], "");
+        if (args.length == 1 && !args[0].isBlank()) {
+            return Map.of(args[0].substring(1), "");
         }
         for (int i = 0; i < args.length - 1; i++) {
             if (isMatchesParamFlag(args[i])) {
