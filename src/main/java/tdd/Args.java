@@ -3,6 +3,7 @@ package tdd;
 import tdd.annotation.Option;
 import tdd.parser.Parser;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
@@ -40,7 +41,7 @@ public class Args {
 
     private Object[] toParams(Parameter[] parameters) {
         return Arrays.stream(parameters)
-                .map(p -> PARSERS.get(p.getType()).parse(argMap.get(p.getAnnotation(Option.class).value())))
+                .map(p -> PARSERS.get(p.getType()).parse(p.getAnnotation(Option.class), argMap))
                 .toArray();
     }
 
