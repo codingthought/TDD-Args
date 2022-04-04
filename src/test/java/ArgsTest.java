@@ -1,4 +1,5 @@
 import annotation.Option;
+import exception.IllegalArgValueException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +37,7 @@ public class ArgsTest {
     // done miss -l when parse then get false
     // done miss -p when parse then get 0
     // done miss -d when parse then get ""
-    // todo given -p /usr/logs when parse then throw IllegalArgValueException
+    // done given -p /usr/logs when parse then throw IllegalArgValueException
     // todo given -p when parse then throw MissingArgValueException
     // todo given -d /usr/logs /uer/vars when parse then throw TooManyArgValueException
     @Test
@@ -92,4 +93,10 @@ public class ArgsTest {
 
     record ArrayOptions(@Option("g") String[] groups, @Option("d") int[] decimals) {
     }
+
+    @Test
+    void should_throw_IllegalArgumentException_when_parse_Illegal_Input() {
+        assertThrows(IllegalArgValueException.class, () -> new Args("-p /usr/logs").parse(IntOption.class));
+    }
+
 }
