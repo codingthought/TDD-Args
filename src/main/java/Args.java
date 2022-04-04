@@ -1,5 +1,7 @@
 import annotation.Option;
-import parser.Parser;
+import parser.BooleanParser;
+import parser.IntParser;
+import parser.StringParser;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -16,27 +18,6 @@ public class Args {
             int[].class, s -> Arrays.stream(s.split(SPACE)).mapToInt(Integer::parseInt).toArray(),
             String[].class, s -> s.split(SPACE)
     );
-
-    static class BooleanParser implements Parser<Boolean> {
-        @Override
-        public Boolean parse(String given) {
-            return Objects.nonNull(given);
-        }
-    }
-
-    static class IntParser implements Parser<Integer> {
-        @Override
-        public Integer parse(String given) {
-            return given == null ? 0 : Integer.parseInt(given);
-        }
-    }
-
-    static class StringParser implements Parser<String> {
-        @Override
-        public String parse(String given) {
-            return Optional.ofNullable(given).orElse("");
-        }
-    }
 
     private final Map<String, String> argMap;
 
