@@ -7,25 +7,17 @@ import exception.TooManyArgValueException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class IntParser implements Parser<Object> {
+public class SingleValueParser implements Parser<Object> {
 
-    public IntParser(Function<String, Object> givenParser, Object defaultValue, Predicate<String> isIllegalValue) {
+    public SingleValueParser(Function<String, Object> givenParser, Object defaultValue, Predicate<String> isIllegalValue) {
         this.isIllegalValue = isIllegalValue;
         this.defaultValue = defaultValue;
         this.givenParser = givenParser;
     }
 
-    private Predicate<String> isIllegalValue;
-
-    private Object defaultValue;
-
-    public IntParser() {
-        this.givenParser = Integer::parseInt;
-        this.defaultValue = 0;
-        this.isIllegalValue = given -> !given.matches("\\d+");
-    }
-
-    private Function<String, Object> givenParser;
+    private final Function<String, Object> givenParser;
+    private final Object defaultValue;
+    private final Predicate<String> isIllegalValue;
 
     @Override
     public Object parse(String given) {
@@ -38,17 +30,10 @@ public class IntParser implements Parser<Object> {
         if (given.split(" ").length > 1) {
             throw new TooManyArgValueException(String.format("given: %s", given));
         }
-        if (isIllegalValue(given)) {
+        if (isIllegalValue.test(given)) {
             throw new IllegalArgValueException(String.format("given:%s", given));
         }
-        return parseGiven(given);
-    }
-
-    private boolean isIllegalValue(String given) {
-        return isIllegalValue.test(given);
-    }
-
-    private Object parseGiven(String given) {
         return givenParser.apply(given);
     }
+
 }
