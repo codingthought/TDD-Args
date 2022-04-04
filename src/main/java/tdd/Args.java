@@ -1,6 +1,8 @@
-import annotation.Option;
-import parser.BooleanParser;
-import parser.SingleValueParser;
+package tdd;
+
+import tdd.annotation.Option;
+import tdd.parser.BooleanParser;
+import tdd.parser.SingleValueParser;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -56,10 +58,8 @@ public class Args {
     private String matchParamValue(String[] args, int paramIndex) {
         List<String> values = new ArrayList<>();
         for (int j = paramIndex + 1; j < args.length; j++) {
+            if (isMatchesParamFlag(args[j])) break;
             values.add(args[j]);
-            if (j + 1 == args.length || isMatchesParamFlag(args[j + 1])) {
-                break;
-            }
         }
         return String.join(" ", values);
     }

@@ -1,9 +1,10 @@
-import annotation.Option;
-import exception.IllegalArgValueException;
-import exception.MissingArgValueException;
-import exception.TooManyArgValueException;
-import org.junit.jupiter.api.Disabled;
+package tdd;
+
 import org.junit.jupiter.api.Test;
+import tdd.annotation.Option;
+import tdd.exception.IllegalArgValueException;
+import tdd.exception.MissingArgValueException;
+import tdd.exception.TooManyArgValueException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,13 +43,6 @@ public class ArgsTest {
     // done given -p /usr/logs when parse then throw IllegalArgValueException
     // done given -p when parse then throw MissingArgValueException
     // done given -d /usr/logs /uer/vars when parse then throw TooManyArgValueException
-    @Test
-    void should_get_true_when_parse_BoolOption() {
-        assertTrue(new Args("-l").parse(BooleanOption.class).logging());
-    }
-
-    record BooleanOption(@Option("l") boolean logging) {
-    }
 
     @Test
     void should_get_8080_when_parse_IntOption() {
