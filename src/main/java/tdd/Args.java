@@ -8,7 +8,7 @@ import java.lang.reflect.Parameter;
 import java.util.*;
 import java.util.function.Function;
 
-import static tdd.parser.SingleValueParsers.*;
+import static tdd.parser.Parsers.*;
 
 public class Args {
     private static final String SPACE = " ";

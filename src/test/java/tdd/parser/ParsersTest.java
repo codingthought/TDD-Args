@@ -10,7 +10,7 @@ import tdd.Args;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SingleValueParsersTest {
+public class ParsersTest {
 
     @Nested
     class BoolOptionTest {
