@@ -5,10 +5,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+@Target({ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.FIELD})
-public @interface Option {
+public @interface DefaultValue {
     String value();
 
-    DefaultValue defaultValue() default @DefaultValue(value = "", clazz = Void.class);
+    Class<?> clazz();
 }

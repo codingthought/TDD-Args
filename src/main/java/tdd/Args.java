@@ -15,7 +15,7 @@ public class Args {
     private static final String SPACE = " ";
     private final Map<Class<?>, Parser<?>> PARSERS = Map.of(
             boolean.class, bool(),
-            int.class, unary(Integer::parseInt, 0, given1 -> !given1.matches("\\d+")),
+            int.class, unary(Integer::parseInt, 0, given1 -> !given1.matches("-?\\d+")),
             String.class, unary(String::valueOf, "", given -> false),
             int[].class, s -> Optional.ofNullable(s)
                     .map(given -> Arrays.stream(given.split(SPACE)).mapToInt(Integer::parseInt).toArray())

@@ -1,6 +1,7 @@
 package tdd.parser;
 
 import org.junit.jupiter.api.Nested;
+import tdd.annotation.DefaultValue;
 import tdd.annotation.Option;
 import tdd.exception.IllegalArgValueException;
 import tdd.exception.MissingArgValueException;
@@ -41,7 +42,16 @@ public class ParsersTest {
             assertEquals(8080, new Args("-p 8080").parse(IntOption.class).port());
         }
 
+        @Test
+        void should_get_special_default_when_parse_IntOptionWithDefault() {
+            assertEquals(-1, new Args("").parse(IntOptionWithDefault.class).port());
+        }
+
         public record IntOption(@Option("p") int port) {
+        }
+
+        public record IntOptionWithDefault(
+                @Option(value = "p", defaultValue = @DefaultValue(value = "-1", clazz = int.class)) int port) {
         }
 
         @Test
