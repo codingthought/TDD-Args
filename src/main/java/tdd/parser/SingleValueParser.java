@@ -9,15 +9,15 @@ import java.util.function.Predicate;
 
 public class SingleValueParser<T> implements Parser<T> {
 
-    public SingleValueParser(Function<String, T> givenParser, T defaultValue, Predicate<String> isIllegalValue) {
-        this.isIllegalValue = isIllegalValue;
+    public SingleValueParser(Function<String, T> givenParser, T defaultValue, Predicate<String> isIllegalValuePredicate) {
+        this.isIllegalValuePredicate = isIllegalValuePredicate;
         this.defaultValue = defaultValue;
         this.givenParser = givenParser;
     }
 
     private final Function<String, T> givenParser;
     private final T defaultValue;
-    private final Predicate<String> isIllegalValue;
+    private final Predicate<String> isIllegalValuePredicate;
 
     @Override
     public T parse(String given) {
@@ -30,7 +30,7 @@ public class SingleValueParser<T> implements Parser<T> {
         if (given.split(" ").length > 1) {
             throw new TooManyArgValueException(String.format("given: %s", given));
         }
-        if (isIllegalValue.test(given)) {
+        if (isIllegalValuePredicate.test(given)) {
             throw new IllegalArgValueException(String.format("given:%s", given));
         }
         return givenParser.apply(given);
