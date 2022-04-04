@@ -1,26 +1,26 @@
 package tdd;
 
 import tdd.annotation.Option;
+import tdd.parser.Parser;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 import java.util.*;
-import java.util.function.Function;
 
 import static tdd.parser.Parsers.*;
 
 public class Args {
     private static final String SPACE = " ";
-    private final Map<Class<?>, Function<String, ?>> PARSERS = Map.of(
-            boolean.class, bool()::parse,
-            int.class, unary(Integer::parseInt, 0, given1 -> !given1.matches("\\d+"))::parse,
-            String.class, unary(String::valueOf, "", given -> false)::parse,
+    private final Map<Class<?>, Parser<?>> PARSERS = Map.of(
+            boolean.class, bool(),
+            int.class, unary(Integer::parseInt, 0, given1 -> !given1.matches("\\d+")),
+            String.class, unary(String::valueOf, "", given -> false),
             int[].class, s -> Optional.ofNullable(s)
                     .map(given -> Arrays.stream(given.split(SPACE)).mapToInt(Integer::parseInt).toArray())
                     .orElse(new int[0]),
-            Integer[].class, array(Integer::parseInt, Integer[]::new)::parse,
-            String[].class, array(String::valueOf, String[]::new)::parse
+            Integer[].class, array(Integer::parseInt, Integer[]::new),
+            String[].class, array(String::valueOf, String[]::new)
     );
 
     private final Map<String, String> argMap;
@@ -40,8 +40,7 @@ public class Args {
 
     private Object[] toParams(Parameter[] parameters) {
         return Arrays.stream(parameters)
-                .map(p -> PARSERS.get(p.getType()).apply(
-                        argMap.get(p.getAnnotation(Option.class).value())))
+                .map(p -> PARSERS.get(p.getType()).parse(argMap.get(p.getAnnotation(Option.class).value())))
                 .toArray();
     }
 
