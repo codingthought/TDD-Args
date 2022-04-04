@@ -1,7 +1,6 @@
 import annotation.Option;
 import parser.BooleanParser;
 import parser.IntParser;
-import parser.StringParser;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -14,7 +13,7 @@ public class Args {
     private final Map<Class<?>, Function<String, ?>> PARSERS = Map.of(
             boolean.class, new BooleanParser()::parse,
             int.class, new IntParser()::parse,
-            String.class, new StringParser()::parse,
+            String.class, new IntParser(String::valueOf, "", given -> false)::parse,
             int[].class, s -> Arrays.stream(s.split(SPACE)).mapToInt(Integer::parseInt).toArray(),
             String[].class, s -> s.split(SPACE)
     );
