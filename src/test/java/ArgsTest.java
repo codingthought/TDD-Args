@@ -104,10 +104,12 @@ public class ArgsTest {
     @Test
     void should_throw_MissingArgValueException_when_parse_if_miss_arg_value() {
         assertThrows(MissingArgValueException.class, () -> new Args("-p").parse(IntOption.class));
+        assertThrows(MissingArgValueException.class, () -> new Args("-d").parse(StringOption.class));
     }
 
     @Test
     void should_throw_TooManyArgValueException_when_parse_if_too_many_arg_value() {
         assertThrows(TooManyArgValueException.class, () -> new Args("-d /usr/logs /uer/vars").parse(StringOption.class));
+        assertThrows(TooManyArgValueException.class, () -> new Args("-p 8080 8081").parse(IntOption.class));
     }
 }
