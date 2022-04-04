@@ -1,4 +1,5 @@
 import annotation.Option;
+import parser.Parser;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -16,26 +17,21 @@ public class Args {
             String[].class, s -> s.split(SPACE)
     );
 
-    interface parser<T> {
-        T parse(String given);
-    }
-
-    static class BooleanParser implements parser<Boolean> {
+    static class BooleanParser implements Parser<Boolean> {
         @Override
         public Boolean parse(String given) {
             return Objects.nonNull(given);
         }
     }
 
-
-    static class IntParser implements parser<Integer> {
+    static class IntParser implements Parser<Integer> {
         @Override
         public Integer parse(String given) {
             return given == null ? 0 : Integer.parseInt(given);
         }
     }
 
-    static class StringParser implements parser<String> {
+    static class StringParser implements Parser<String> {
         @Override
         public String parse(String given) {
             return Optional.ofNullable(given).orElse("");
