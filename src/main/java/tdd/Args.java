@@ -1,8 +1,6 @@
 package tdd;
 
 import tdd.annotation.Option;
-import tdd.parser.BooleanParser;
-import tdd.parser.SingleValueParser;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -10,12 +8,15 @@ import java.lang.reflect.Parameter;
 import java.util.*;
 import java.util.function.Function;
 
+import static tdd.parser.SingleValueParsers.bool;
+import static tdd.parser.SingleValueParsers.unary;
+
 public class Args {
     private static final String SPACE = " ";
     private final Map<Class<?>, Function<String, ?>> PARSERS = Map.of(
-            boolean.class, new BooleanParser()::parse,
-            int.class, new SingleValueParser<>(Integer::parseInt, 0, given1 -> !given1.matches("\\d+"))::parse,
-            String.class, new SingleValueParser<>(String::valueOf, "", given -> false)::parse,
+            boolean.class, bool()::parse,
+            int.class, unary(Integer::parseInt, 0, given1 -> !given1.matches("\\d+"))::parse,
+            String.class, unary(String::valueOf, "", given -> false)::parse,
             int[].class, s -> Arrays.stream(s.split(SPACE)).mapToInt(Integer::parseInt).toArray(),
             String[].class, s -> s.split(SPACE)
     );
